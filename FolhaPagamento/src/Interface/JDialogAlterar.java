@@ -4,6 +4,10 @@
  * and open the template in the editor.
  */
 package Interface;
+import Classe.Conexao;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -21,6 +25,28 @@ public class JDialogAlterar extends javax.swing.JDialog {
         tfSalario.setEnabled(false);
         jComboBox1.setEnabled(false);
         jComboBox2.setEnabled(false);
+        carregarTabela("select * from funcionario");
+
+    }
+    
+    private void carregarTabela(String sql){
+        try{
+        DefaultTableModel mode = (DefaultTableModel)jTable2.getModel();
+        mode.setNumRows(0);
+        
+            Conexao.executaSQL(sql);
+            while(Conexao.rs.next()){
+                mode.addRow(new Object[]{
+                    Conexao.rs.getString("nome"),
+                    Conexao.rs.getString("cargo"),
+                    Conexao.rs.getDouble("ganho"),
+                    Conexao.rs.getString("cidade"),
+                    Conexao.rs.getString("estado_sg")
+                });
+            }
+        }catch(Exception ex){
+            ex.getMessage();
+        }
     }
 
     /**
@@ -46,7 +72,6 @@ public class JDialogAlterar extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
         tfBuscarNome = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -59,23 +84,31 @@ public class JDialogAlterar extends javax.swing.JDialog {
 
         jLabel3.setText("Cargo:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Analista de Recurso Gerais", "Auxiliar de Serviços Gerais", "Caixa", "Diretor Administrativo Financeiro", "Estoquista", "Gerente de Estoque", "Gerente de Loja" }));
 
         jLabel4.setText("Salário:");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "M", "F" }));
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {},
-                {},
-                {},
-                {}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-
+                "Nome", "Cargo", "Salário", "Cidade", "Estado"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(jTable2);
 
         jButton1.setText("Alterar");
@@ -84,7 +117,11 @@ public class JDialogAlterar extends javax.swing.JDialog {
 
         jButton3.setText("Pesquisar");
 
-        jLabel5.setText("Nome:");
+        tfBuscarNome.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfBuscarNomeKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -109,15 +146,12 @@ public class JDialogAlterar extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton2))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(tfBuscarNome))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel1)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(tfAlterarNome, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(tfAlterarNome, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(tfBuscarNome, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -134,7 +168,6 @@ public class JDialogAlterar extends javax.swing.JDialog {
                 .addGap(8, 8, 8)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3)
-                    .addComponent(jLabel5)
                     .addComponent(tfBuscarNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -177,6 +210,10 @@ public class JDialogAlterar extends javax.swing.JDialog {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tfBuscarNomeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfBuscarNomeKeyReleased
+        carregarTabela("select * from funcionario");
+    }//GEN-LAST:event_tfBuscarNomeKeyReleased
 
     /**
      * @param args the command line arguments
@@ -232,7 +269,6 @@ public class JDialogAlterar extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable2;
