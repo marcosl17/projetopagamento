@@ -9,19 +9,30 @@ public class Funcionario {
     private String nome;
     private int idade;
     private String cargo;
-    private int ganho;
+    private double ganho;
     private String cidade, estado_sg, sexo;
-    private double inss, irrf, fgts, auxtransp;
+    private double inss, irrf, fgts, auxtrans;
     
     public Funcionario(){
     }
-//    public Funcionario(int codigo, String nome, int idade, String cargo, int ganho) {
-//        this.codigo = codigo;
-//        this.nome = nome;
-//        this.idade = idade;
-//        this.cargo = cargo;
-//        this.ganho = ganho;
-//    }
+    
+    public Funcionario(int codigo, String nome, int idade, String cargo, double ganho) {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.idade = idade;
+        this.cargo = cargo;
+        this.ganho = ganho;
+    }
+
+    public Funcionario(String nome, String cargo, double ganho, double inss, double irrf, double fgts, double auxtrans) {
+        this.nome = nome;
+        this.cargo = cargo;
+        this.ganho = ganho;
+        this.inss = inss;
+        this.irrf = irrf;
+        this.fgts = fgts;
+        this.auxtrans = auxtrans;
+    }
 
     
     public int getCodigo() {
@@ -56,11 +67,11 @@ public class Funcionario {
         this.cargo = cargo;
     }
 
-    public int getGanho() {
+    public double getGanho() {
         return ganho;
     }
 
-    public void setGanho(int ganho) {
+    public void setGanho(double ganho) {
         this.ganho = ganho;
     }
 
@@ -112,12 +123,12 @@ public class Funcionario {
         this.fgts = fgts;
     }
 
-    public double getAuxtransp() {
-        return auxtransp;
+    public double getAuxtrans() {
+        return auxtrans;
     }
 
-    public void setAuxtransp(double auxtransp) {
-        this.auxtransp = auxtransp;
+    public void setAuxtrans(double auxtransp) {
+        this.auxtrans = auxtransp;
     }
     
 }

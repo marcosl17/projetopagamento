@@ -5,6 +5,7 @@
  */
 package Interface;
 
+import Classe.Conexao;
 import javax.swing.JOptionPane;
 
 
@@ -17,6 +18,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
    
     public TelaPrincipal() {
         initComponents();
+        Conexao.getConnection();
     }
 
     /**

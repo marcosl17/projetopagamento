@@ -22,9 +22,9 @@ public class Desconto {
         }else if((valor >= 2826.66)&&(valor <= 3751.05)){
             valor = (valor*15)/100;
         }else if((valor >= 3751.06)&&(valor <= 4664.68)){
-            valor = (5531.31*22.5)/100; 
+            valor = (valor*22.5)/100; 
         }else  if(valor > 4664.68){
-            valor = (5531.31*27.5)/100;
+            valor = (valor*27.5)/100;
         }
         return valor;
     }

@@ -5,6 +5,14 @@
  */
 package Interface;
 
+import Classe.*;
+import java.sql.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Marcos
@@ -17,6 +25,7 @@ public class JDialogRemover extends javax.swing.JDialog {
     public JDialogRemover(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        btRemover.setEnabled(false);
     }
 
     /**
@@ -31,8 +40,8 @@ public class JDialogRemover extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btRemover = new javax.swing.JButton();
+        btPesquisar = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         tfBuscarNome = new javax.swing.JTextField();
 
@@ -42,20 +51,42 @@ public class JDialogRemover extends javax.swing.JDialog {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {},
-                {},
-                {},
-                {}
+
             },
             new String [] {
-
+                "ID", "Nome", "Cargo", "Salario", "Sexo", "Cidade", "Estado"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(jTable2);
+        if (jTable2.getColumnModel().getColumnCount() > 0) {
+            jTable2.getColumnModel().getColumn(0).setResizable(false);
+            jTable2.getColumnModel().getColumn(0).setPreferredWidth(1);
+            jTable2.getColumnModel().getColumn(4).setPreferredWidth(1);
+            jTable2.getColumnModel().getColumn(6).setResizable(false);
+            jTable2.getColumnModel().getColumn(6).setPreferredWidth(2);
+        }
 
-        jButton1.setText("Remover");
+        btRemover.setText("Remover");
+        btRemover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btRemoverActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Pesquisar");
+        btPesquisar.setText("Pesquisar");
+        btPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btPesquisarActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Nome:");
 
@@ -66,17 +97,16 @@ public class JDialogRemover extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btRemover)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfBuscarNome, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(jButton3)))
+                        .addComponent(tfBuscarNome, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
+                        .addComponent(btPesquisar)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -84,11 +114,11 @@ public class JDialogRemover extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
+                    .addComponent(btPesquisar)
                     .addComponent(jLabel5)
                     .addComponent(tfBuscarNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(btRemover)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
                 .addContainerGap())
@@ -100,8 +130,8 @@ public class JDialogRemover extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -114,6 +144,56 @@ public class JDialogRemover extends javax.swing.JDialog {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+        
+    private void btRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRemoverActionPerformed
+        Funcionario objpes = new Funcionario();
+        int indice = jTable2.getSelectedRow();
+        
+        objpes.setCodigo(Integer.parseInt(jTable2.getValueAt(indice, 0).toString()));
+        try {
+            Acao.excluirDados(objpes);
+            JOptionPane.showMessageDialog(this,"Excluido!");
+        } catch (SQLException ex) {
+            //ex.getMessage();
+            JOptionPane.showMessageDialog(this,"Erro na exclusão!");
+        }
+        btRemover.setEnabled(false);
+        jTable2.removeAll();
+    }//GEN-LAST:event_btRemoverActionPerformed
+
+    private void btPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPesquisarActionPerformed
+        ArrayList<Funcionario> FuncionarioLista = new ArrayList<>();
+        btRemover.setEnabled(true);
+        Funcionario objpes = new Funcionario();
+        try {
+        objpes = Acao.Pesquisar(tfBuscarNome.getText());
+        
+        FuncionarioLista.add(objpes);
+        
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        Object [] row = new Object[7];
+        
+        for(int i = 0; i<FuncionarioLista.size(); i++){
+            if(FuncionarioLista.get(i).getCodigo()!= 0){
+                row[0] = FuncionarioLista.get(i).getCodigo();
+                row[1] = FuncionarioLista.get(i).getNome();
+                row[2] = FuncionarioLista.get(i).getCargo();
+                row[3] = FuncionarioLista.get(i).getGanho();
+                row[4] = FuncionarioLista.get(i).getSexo();
+                row[5] = FuncionarioLista.get(i).getCidade();
+                row[6] = FuncionarioLista.get(i).getEstado_sg();
+                model.addRow(row);
+                }else{
+                    JOptionPane.showMessageDialog(this,"Nome não encontrado!");
+            }
+        }
+        
+        }catch(Exception e){
+            e.getMessage();
+        }
+        tfBuscarNome.setText("");
+    }//GEN-LAST:event_btPesquisarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -162,8 +242,8 @@ public class JDialogRemover extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btPesquisar;
+    private javax.swing.JButton btRemover;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;

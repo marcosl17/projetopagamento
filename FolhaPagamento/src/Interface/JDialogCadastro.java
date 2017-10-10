@@ -1,14 +1,9 @@
 package Interface;
 
-import Classe.Desconto;
-import Classe.Funcionario;
-import Classe.IncluirDAO;
-import Classe.PesquisarDAO;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import Classe.*;
+import java.awt.*;
+import java.sql.*;
+import java.util.*;
 import javax.swing.*;
 
 /**
@@ -21,31 +16,10 @@ public class JDialogCadastro extends javax.swing.JDialog {
      * Creates new form JDialogCadastro
      * @param campo
      */
-    public static void limparVirgula(JTextField campo){
-        
-        campo.addKeyListener(new  KeyAdapter(){
-            public void KeyTyped(KeyEvent evt){
-                int l = campo.getText().length();
-                int code = evt.getKeyChar();
-                
-                if(code == 44 || code >= 48 && code <=57){
-                    if(code == 44){
-                       evt.setKeyChar((char) KeyEvent.VK_CLEAR); 
-                    }
-                }else{
-                    evt.setKeyChar((char) KeyEvent.VK_CLEAR);
-                    evt.consume();
-                }
-            }
-            });
-    }
-    
     
     public JDialogCadastro(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        limparVirgula(tfGanhos);
-        
     }
 
     /**
@@ -225,16 +199,15 @@ public class JDialogCadastro extends javax.swing.JDialog {
 
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
      Funcionario objpes = new Funcionario();
-     IncluirDAO DAO = new IncluirDAO();
      
      if(jRadioButton1.isSelected()){
-         objpes.setAuxtransp(Desconto.Auxtransp(Double.parseDouble(tfGanhos.getText())));
+         objpes.setAuxtrans(Desconto.Auxtransp(Double.parseDouble(tfGanhos.getText())));
      }else{
-         objpes.setAuxtransp(Desconto.Auxtransp(0));
+         objpes.setAuxtrans(Desconto.Auxtransp(0));
      }
      
      objpes.setInss(Desconto.INSS(Double.parseDouble(tfGanhos.getText())));
-     objpes.setIrrf(Desconto.IRRF(Double.parseDouble(tfGanhos.getText()))); 
+     objpes.setIrrf(Desconto.IRRF(Double.parseDouble(tfGanhos.getText())));
      objpes.setFgts(Desconto.FGTS(Double.parseDouble(tfGanhos.getText())));
      objpes.setNome(tfNome.getText());
      objpes.setGanho(Integer.parseInt(tfGanhos.getText().trim()));
@@ -244,7 +217,7 @@ public class JDialogCadastro extends javax.swing.JDialog {
      objpes.setCargo(jComboBox1.getSelectedItem().toString());
      
     try {
-        if(DAO.Incluir(objpes)){
+        if(Acao.Incluir(objpes)){
             JOptionPane.showMessageDialog(this,"Registro salvo com sucesso!");
          
         }        
@@ -254,7 +227,7 @@ public class JDialogCadastro extends javax.swing.JDialog {
         ex.getMessage();
     }
     }//GEN-LAST:event_btSalvarActionPerformed
-
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         tfCidade.setText("");
         tfGanhos.setText("");

@@ -4,10 +4,7 @@
  * and open the template in the editor.
  */
 package Interface;
-import Classe.Conexao;
-import javax.swing.RowFilter;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
+import javax.swing.*;
 
 /**
  *
@@ -25,29 +22,11 @@ public class JDialogAlterar extends javax.swing.JDialog {
         tfSalario.setEnabled(false);
         jComboBox1.setEnabled(false);
         jComboBox2.setEnabled(false);
-        carregarTabela("select * from funcionario");
+        
 
     }
     
-    private void carregarTabela(String sql){
-        try{
-        DefaultTableModel mode = (DefaultTableModel)jTable2.getModel();
-        mode.setNumRows(0);
-        
-            Conexao.executaSQL(sql);
-            while(Conexao.rs.next()){
-                mode.addRow(new Object[]{
-                    Conexao.rs.getString("nome"),
-                    Conexao.rs.getString("cargo"),
-                    Conexao.rs.getDouble("ganho"),
-                    Conexao.rs.getString("cidade"),
-                    Conexao.rs.getString("estado_sg")
-                });
-            }
-        }catch(Exception ex){
-            ex.getMessage();
-        }
-    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -116,12 +95,6 @@ public class JDialogAlterar extends javax.swing.JDialog {
         jButton2.setText("Cancelar");
 
         jButton3.setText("Pesquisar");
-
-        tfBuscarNome.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                tfBuscarNomeKeyReleased(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -210,10 +183,6 @@ public class JDialogAlterar extends javax.swing.JDialog {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void tfBuscarNomeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfBuscarNomeKeyReleased
-        carregarTabela("select * from funcionario");
-    }//GEN-LAST:event_tfBuscarNomeKeyReleased
 
     /**
      * @param args the command line arguments
