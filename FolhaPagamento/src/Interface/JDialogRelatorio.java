@@ -25,6 +25,9 @@ public class JDialogRelatorio extends javax.swing.JDialog {
         initComponents();
         Mostra_Tabela();
     }
+
+    public JDialogRelatorio() {
+    }
     
     
     public ArrayList<Funcionario> getFuncionarioLista(){

@@ -27,7 +27,7 @@ public class JDialogRemover extends javax.swing.JDialog {
         initComponents();
         btRemover.setEnabled(false);
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -145,8 +145,9 @@ public class JDialogRemover extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-        
+    
     private void btRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRemoverActionPerformed
+        
         Funcionario objpes = new Funcionario();
         int indice = jTable2.getSelectedRow();
         
@@ -159,7 +160,10 @@ public class JDialogRemover extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this,"Erro na exclusão!");
         }
         btRemover.setEnabled(false);
-        jTable2.removeAll();
+        
+        ((DefaultTableModel) jTable2.getModel()).setNumRows(0); 
+        jTable2.updateUI();
+        
     }//GEN-LAST:event_btRemoverActionPerformed
 
     private void btPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPesquisarActionPerformed
@@ -170,6 +174,9 @@ public class JDialogRemover extends javax.swing.JDialog {
         objpes = Acao.Pesquisar(tfBuscarNome.getText());
         
         FuncionarioLista.add(objpes);
+        
+        ((DefaultTableModel) jTable2.getModel()).setNumRows(0); 
+        jTable2.updateUI();
         
         DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
         Object [] row = new Object[7];
@@ -193,6 +200,7 @@ public class JDialogRemover extends javax.swing.JDialog {
             e.getMessage();
         }
         tfBuscarNome.setText("");
+        
     }//GEN-LAST:event_btPesquisarActionPerformed
 
     /**

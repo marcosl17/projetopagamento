@@ -4,7 +4,14 @@
  * and open the template in the editor.
  */
 package Interface;
+import Classe.*;
+import static Classe.Conexao.con;
+import java.sql.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,10 +27,12 @@ public class JDialogAlterar extends javax.swing.JDialog {
         initComponents();
         tfAlterarNome.setEnabled(false);
         tfSalario.setEnabled(false);
+        tfCidade.setEnabled(false);
         jComboBox1.setEnabled(false);
         jComboBox2.setEnabled(false);
-        
-
+        jComboBox3.setEnabled(false);
+        btAlterar.setEnabled(false);
+        btCancelar.setEnabled(false);
     }
     
 
@@ -48,10 +57,14 @@ public class JDialogAlterar extends javax.swing.JDialog {
         jComboBox2 = new javax.swing.JComboBox();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btAlterar = new javax.swing.JButton();
+        btCancelar = new javax.swing.JButton();
+        btPesquisar = new javax.swing.JButton();
         tfBuscarNome = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        tfCidade = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jComboBox3 = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -71,30 +84,61 @@ public class JDialogAlterar extends javax.swing.JDialog {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "Nome", "Cargo", "Salário", "Cidade", "Estado"
+                "ID", "Nome", "Cargo", "Salário", "Cidade", "Estado"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable2MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTable2);
+        if (jTable2.getColumnModel().getColumnCount() > 0) {
+            jTable2.getColumnModel().getColumn(0).setResizable(false);
+            jTable2.getColumnModel().getColumn(0).setPreferredWidth(1);
+            jTable2.getColumnModel().getColumn(4).setPreferredWidth(2);
+            jTable2.getColumnModel().getColumn(5).setResizable(false);
+            jTable2.getColumnModel().getColumn(5).setPreferredWidth(1);
+        }
 
-        jButton1.setText("Alterar");
+        btAlterar.setText("Alterar");
+        btAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btAlterarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Cancelar");
+        btCancelar.setText("Cancelar");
+        btCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btCancelarActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Pesquisar");
+        btPesquisar.setText("Pesquisar");
+        btPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btPesquisarActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("Cidade:");
+
+        jLabel6.setText("UF:");
+
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" }));
+        jComboBox3.setSelectedIndex(4);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -103,36 +147,44 @@ public class JDialogAlterar extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addComponent(btAlterar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfSalario, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3)
+                        .addComponent(btCancelar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jButton1)
+                                .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel1)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(tfAlterarNome, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(tfBuscarNome, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(tfSalario, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tfCidade))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tfAlterarNome))
+                            .addComponent(tfBuscarNome, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btPesquisar, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel2)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(2, 2, 2)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -140,7 +192,7 @@ public class JDialogAlterar extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(8, 8, 8)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
+                    .addComponent(btPesquisar)
                     .addComponent(tfBuscarNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -152,12 +204,17 @@ public class JDialogAlterar extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(tfSalario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel5)
+                    .addComponent(tfCidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btAlterar)
+                    .addComponent(btCancelar)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
                 .addContainerGap())
@@ -183,6 +240,120 @@ public class JDialogAlterar extends javax.swing.JDialog {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPesquisarActionPerformed
+        ArrayList<Funcionario> FuncionarioLista = new ArrayList<>();
+        
+        Funcionario objpes = new Funcionario();
+        try {
+        objpes = Acao.Pesquisar(tfBuscarNome.getText());
+        
+        FuncionarioLista.add(objpes);
+        
+        ((DefaultTableModel) jTable2.getModel()).setNumRows(0); 
+        jTable2.updateUI();
+        
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        Object [] row = new Object[7];
+        
+        for(int i = 0; i<FuncionarioLista.size(); i++){
+            if(FuncionarioLista.get(i).getCodigo()!= 0){
+                row[0] = FuncionarioLista.get(i).getCodigo();
+                row[1] = FuncionarioLista.get(i).getNome();
+                row[2] = FuncionarioLista.get(i).getCargo();
+                row[3] = FuncionarioLista.get(i).getGanho();
+                row[4] = FuncionarioLista.get(i).getCidade();
+                row[5] = FuncionarioLista.get(i).getEstado_sg();
+                model.addRow(row);
+                }else{
+                    JOptionPane.showMessageDialog(this,"Nome não encontrado!");
+                            tfAlterarNome.setEnabled(false);
+                            tfSalario.setEnabled(false);
+                            tfCidade.setEnabled(false);
+                            jComboBox1.setEnabled(false);
+                            jComboBox2.setEnabled(false);
+                            jComboBox3.setEnabled(false);
+                            btAlterar.setEnabled(false);
+                            btCancelar.setEnabled(false);
+            }
+        }
+        tfBuscarNome.setText("");
+        }catch(Exception e){
+            e.getMessage();
+        }      
+    }//GEN-LAST:event_btPesquisarActionPerformed
+
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+                tfAlterarNome.setEnabled(true);
+                tfSalario.setEnabled(true);
+                tfCidade.setEnabled(true);
+                jComboBox1.setEnabled(true);
+                jComboBox2.setEnabled(true);
+                jComboBox3.setEnabled(true);
+                btAlterar.setEnabled(true);
+                btCancelar.setEnabled(true);
+            int indice = jTable2.getSelectedRow();
+            tfAlterarNome.setText(jTable2.getValueAt(indice, 1).toString());
+            tfSalario.setText(jTable2.getValueAt(indice, 3).toString());
+            tfCidade.setText(jTable2.getValueAt(indice, 4).toString());
+            jComboBox1.setSelectedItem(null);
+            jComboBox2.setSelectedItem(null);
+            jComboBox3.setSelectedItem(null);
+    }//GEN-LAST:event_jTable2MouseClicked
+
+    private void btAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAlterarActionPerformed
+        try {
+            PreparedStatement pst;
+            Connection con;
+            
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(JDialogAlterar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            con = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Marcos\\Documents\\NetBeansProjects\\projetopagamento\\FolhaPagamento\\db\\projetopagamento.db");
+            
+            int indice = jTable2.getSelectedRow();
+            String query = "UPDATE funcionario set nome=?, cargo=?, ganho=?, cidade=?, estado_sg=?, sexo=?, inss=?, irrf=?, fgts=? where codigo="+jTable2.getValueAt(indice, 0).toString()+"";
+            pst = con.prepareStatement(query);
+            pst.setString(1, tfAlterarNome.getText());
+            pst.setString(2, jComboBox1.getSelectedItem().toString());
+            pst.setString(3, tfSalario.getText());
+            pst.setString(4, tfCidade.getText());
+            pst.setString(5, jComboBox3.getSelectedItem().toString());
+            pst.setString(6, jComboBox2.getSelectedItem().toString());
+            double inss = Desconto.INSS(Double.parseDouble(tfSalario.getText()));
+            pst.setString(7, String.valueOf(inss));
+            double irrf = Desconto.IRRF(Double.parseDouble(tfSalario.getText()));
+            pst.setString(8, String.valueOf(irrf));
+            double fgts = Desconto.FGTS(Double.parseDouble(tfSalario.getText()));
+            pst.setString(9, String.valueOf(fgts));        
+                    
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(null,"Alteração Feita!");
+            
+            ((DefaultTableModel) jTable2.getModel()).setNumRows(0); 
+            jTable2.updateUI();
+            
+            tfAlterarNome.setText("");
+            tfSalario.setText("");
+            tfCidade.setText("");
+            tfAlterarNome.setEnabled(false);
+            tfSalario.setEnabled(false);
+            tfCidade.setEnabled(false);
+            jComboBox1.setEnabled(false);
+            jComboBox2.setEnabled(false);
+            jComboBox3.setEnabled(false);
+            btAlterar.setEnabled(false);
+            btCancelar.setEnabled(false);            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null,ex);
+        }
+    }//GEN-LAST:event_btAlterarActionPerformed
+
+    private void btCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCancelarActionPerformed
+        dispose();
+    }//GEN-LAST:event_btCancelarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -229,20 +400,24 @@ public class JDialogAlterar extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btAlterar;
+    private javax.swing.JButton btCancelar;
+    private javax.swing.JButton btPesquisar;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JComboBox jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable2;
     private javax.swing.JTextField tfAlterarNome;
     private javax.swing.JTextField tfBuscarNome;
+    private javax.swing.JTextField tfCidade;
     private javax.swing.JTextField tfSalario;
     // End of variables declaration//GEN-END:variables
 }
